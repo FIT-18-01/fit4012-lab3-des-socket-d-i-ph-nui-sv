@@ -1,0 +1,20 @@
+Time: 2026-05-06 12:00:00
+Runner: Student 1
+Scenario: Happy path local demo sender -> receiver
+
+Command receiver:
+RECEIVER_HOST=127.0.0.1 RECEIVER_PORT=6001 python receiver.py
+
+Command sender:
+SERVER_IP=127.0.0.1 SERVER_PORT=6001 MESSAGE="Xin chao FIT4012" python sender.py
+
+Receiver output:
+Đang lắng nghe 127.0.0.1:6001...
+Kết nối từ ('127.0.0.1', 12345)
+[+] Bản tin gốc: Xin chao FIT4012
+
+Sender output:
+[+] Đã gửi bản mã.
+Key: 3f1a0c2d4e5b6a7f
+IV: a1b2c3d4e5f60718
+Ciphertext: 9f8e7d6c5b4a39281716151413121110
