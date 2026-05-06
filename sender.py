@@ -25,7 +25,7 @@ def main() -> None:
         s.sendall(overall)
 
     lines = [
-        "[+] Đã gửi bản mã.",
+        "[+] Sent ciphertext.",
         f"Key: {key.hex()}",
         f"IV: {iv.hex()}",
         f"Ciphertext: {cipher_bytes.hex()}",

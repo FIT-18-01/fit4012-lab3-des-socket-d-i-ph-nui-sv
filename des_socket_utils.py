@@ -14,12 +14,12 @@ def pad(data: bytes) -> bytes:
 
 def unpad(data: bytes) -> bytes:
     if not data:
-        raise ValueError("Dữ liệu rỗng, không thể bỏ padding.")
+        raise ValueError("Data is empty, cannot unpad.")
     pad_len = data[-1]
     if pad_len < 1 or pad_len > BLOCK_SIZE:
-        raise ValueError("Padding không hợp lệ.")
+        raise ValueError("Invalid padding.")
     if data[-pad_len:] != bytes([pad_len]) * pad_len:
-        raise ValueError("Padding PKCS#7 không hợp lệ.")
+        raise ValueError("Invalid PKCS#7 padding.")
     return data[:-pad_len]
 
 
@@ -35,9 +35,9 @@ def encrypt_des_cbc(plain: bytes, key: bytes | None = None, iv: bytes | None = N
 
 def decrypt_des_cbc(key: bytes, iv: bytes, cipher_bytes: bytes) -> bytes:
     if len(key) != 8 or len(iv) != 8:
-        raise ValueError("DES key và IV phải dài đúng 8 byte.")
+        raise ValueError("DES key and IV must be exactly 8 bytes.")
     if len(cipher_bytes) % BLOCK_SIZE != 0:
-        raise ValueError("Ciphertext phải có độ dài là bội số của 8 byte.")
+        raise ValueError("Ciphertext length must be a multiple of 8 bytes.")
     des = DES.new(key, DES.MODE_CBC, iv)
     return unpad(des.decrypt(cipher_bytes))
 
@@ -48,7 +48,7 @@ def build_packet(key: bytes, iv: bytes, cipher_bytes: bytes) -> bytes:
 
 def parse_header(header: bytes) -> tuple[bytes, bytes, int]:
     if len(header) != HEADER_SIZE:
-        raise ValueError("Header phải dài đúng 20 byte (8 key + 8 IV + 4 length).")
+        raise ValueError("Header must be exactly 20 bytes (8 key + 8 IV + 4 length).")
     key = header[:8]
     iv = header[8:16]
     length = struct.unpack('!I', header[16:20])[0]
@@ -61,7 +61,7 @@ def recv_exact(conn, n: int) -> bytes:
     while received < n:
         chunk = conn.recv(n - received)
         if not chunk:
-            raise ConnectionError("Kết nối bị đóng trước khi nhận đủ dữ liệu.")
+            raise ConnectionError("Connection closed before receiving enough data.")
         chunks.append(chunk)
         received += len(chunk)
     return b''.join(chunks)
